@@ -3,6 +3,7 @@ package com.itmuch.contentcenter.modular.dev.controller;
 import com.itmuch.contentcenter.modular.dev.model.HyFans;
 import com.itmuch.contentcenter.modular.dev.service.HyFansService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -17,6 +18,7 @@ import java.util.List;
  * @Author guanqing
  * @Date 2021/11/28 16:49
  **/
+@Slf4j
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FansController {
@@ -40,6 +42,32 @@ public class FansController {
         HyFans hyFans = this.hyFansService.getFan();
         String userStr = this.restTemplate.getForObject(
                 "http://localhost:8080/users/{id}",
+                String.class,
+                hyFans.getSex());
+        hyFans.setNickName(userStr);
+        return hyFans;
+    }
+
+    @GetMapping("/getFan2")
+    public HyFans getFan2(){
+        HyFans hyFans = hyFansService.getFan();
+
+        // 强调:
+        // 了解stream --> JDK8
+        // lambda表达式
+        // functional --> 函数式编程
+        //用户中心所有实例的信息
+        List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
+        String targetURL = instances.stream()
+                // 数据变换
+                .map(instance -> instance.getUri().toString() + "/users/{id}")
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("当前没有实例!"));
+
+        log.info("请求的目标地址：{}", targetURL);
+
+        String userStr = this.restTemplate.getForObject(
+                targetURL,
                 String.class,
                 hyFans.getSex());
         hyFans.setNickName(userStr);
