@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itmuch.conentcenter.modular.dev.mapper.HyFansMapper">
+  <resultMap id="BaseResultMap" type="com.itmuch.contentcenter.modular.dev.model.HyFans">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="country" jdbcType="VARCHAR" property="country" />
+    <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="subscribe_time" jdbcType="TIMESTAMP" property="subscribeTime" />
+    <result column="unsubscribe_time" jdbcType="TIMESTAMP" property="unsubscribeTime" />
+    <result column="action_info" jdbcType="VARCHAR" property="actionInfo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>
