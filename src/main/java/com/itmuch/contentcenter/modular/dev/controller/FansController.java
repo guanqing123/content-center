@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * @description: TODO 类描述
@@ -66,6 +68,33 @@ public class FansController {
 
         log.info("请求的目标地址：{}", targetURL);
 
+        String userStr = this.restTemplate.getForObject(
+                targetURL,
+                String.class,
+                hyFans.getSex());
+        hyFans.setNickName(userStr);
+        return hyFans;
+    }
+
+    @GetMapping("/getFan3")
+    public HyFans getFan3(){
+        HyFans hyFans = hyFansService.getFan();
+
+        // 强调:
+        // 了解stream --> JDK8
+        // lambda表达式
+        // functional --> 函数式编程
+        //用户中心所有实例的信息
+        List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
+        List<String> targetURLS = instances.stream()
+                // 数据变换
+                .map(instance -> instance.getUri().toString() + "/users/{id}")
+                .collect(Collectors.toList());
+
+        int i = ThreadLocalRandom.current().nextInt(targetURLS.size());
+
+        String targetURL = targetURLS.get(i);
+        log.info("请求的目标地址：{}", targetURL);
         String userStr = this.restTemplate.getForObject(
                 targetURL,
                 String.class,
