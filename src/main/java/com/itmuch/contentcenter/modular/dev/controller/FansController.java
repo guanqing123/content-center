@@ -33,6 +33,17 @@ public class FansController {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    /**
+     * 测试：服务发现,证明内容中心总能找到用户中心 返回用户中心所有实例的地址信息
+     * @Author guanqing
+     * @Date 2021/11/29 0:20
+     **/
+    @GetMapping("/getInstances")
+    public List<ServiceInstance> getInstances(){
+        // 查询指定服务的所有实例的信息
+        return this.discoveryClient.getInstances("user-center");
+    }
+
     @GetMapping("/getFans")
     public List<HyFans> getFans(){
         List<HyFans> hyFans = hyFansService.getFans();
@@ -76,6 +87,11 @@ public class FansController {
         return hyFans;
     }
 
+    /**
+     * 手写一个客户端侧负载均衡器
+     * @Author guanqing
+     * @Date 2021/11/29 22:26
+     **/
     @GetMapping("/getFan3")
     public HyFans getFan3(){
         HyFans hyFans = hyFansService.getFan();
@@ -104,13 +120,22 @@ public class FansController {
     }
 
     /**
-     * 测试：服务发现,证明内容中心总能找到用户中心 返回用户中心所有实例的地址信息
+     * 使用 ribbon
      * @Author guanqing
-     * @Date 2021/11/29 0:20
+     * @Date 2021/11/29 22:30
      **/
-    @GetMapping("/getInstances")
-    public List<ServiceInstance> getInstances(){
-        // 查询指定服务的所有实例的信息
-        return this.discoveryClient.getInstances("user-center");
+    @GetMapping("/getFan4")
+    public HyFans getFan4(){
+        HyFans hyFans = hyFansService.getFan();
+
+        /* 当restTemplate发起请求的时候,ribbon会自动把 user-center
+          替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
+          计算出一个实例给我们请求 */
+        String userStr = this.restTemplate.getForObject(
+                "http://user-center/users/{id}",
+                String.class,
+                hyFans.getSex());
+        hyFans.setNickName(userStr);
+        return hyFans;
     }
 }
