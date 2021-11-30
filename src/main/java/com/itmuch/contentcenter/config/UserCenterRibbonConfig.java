@@ -1,6 +1,7 @@
 package com.itmuch.contentcenter.config;
 
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.context.annotation.Configuration;
 import ribbonConfig.RibbonConfig;
 
@@ -10,6 +11,6 @@ import ribbonConfig.RibbonConfig;
  * @Date 2021/11/29 22:54
  **/
 @Configuration
-@RibbonClient(name = "user-center", configuration = RibbonConfig.class)
+@RibbonClients(defaultConfiguration = RibbonConfig.class)
 public class UserCenterRibbonConfig {
 }
