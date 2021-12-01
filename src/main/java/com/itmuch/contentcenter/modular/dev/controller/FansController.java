@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.modular.dev.controller;
 
+import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
 import com.itmuch.contentcenter.modular.dev.model.HyFans;
 import com.itmuch.contentcenter.modular.dev.service.HyFansService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class FansController {
     private HyFansService hyFansService;
 
     private final RestTemplate restTemplate;
+
+    private final UserCenterFeignClient userCenterFeignClient;
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -135,6 +138,24 @@ public class FansController {
                 "http://user-center/users/{id}",
                 String.class,
                 hyFans.getSex());
+        hyFans.setNickName(userStr);
+        return hyFans;
+    }
+
+    /**
+     * 使用 feign
+     * @Author guanqing
+     * @Date 2021/11/29 22:30
+     **/
+    @GetMapping("/getFan5")
+    public HyFans getFan5(){
+        HyFans hyFans = hyFansService.getFan();
+
+        /* 当restTemplate发起请求的时候,ribbon会自动把 user-center
+          替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
+          计算出一个实例给我们请求 */
+        String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex());
+
         hyFans.setNickName(userStr);
         return hyFans;
     }
