@@ -11,12 +11,17 @@ spring:
       discovery:
         #指定nacos server的地址
         server-addr: 172.30.8.74:8848
+        cluster-name: BJ
   application:
     # 服务名称尽量用-,不要用_,不要用特殊字符
     name: content-center
 server:
   port: 8090
 
+
 #user-center:
 #  ribbon:
+ribbon:
+  eager-load:
+    enabled: true
 #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
