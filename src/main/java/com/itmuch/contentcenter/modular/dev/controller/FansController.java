@@ -1,6 +1,7 @@
 package com.itmuch.contentcenter.modular.dev.controller;
 
 import com.itmuch.contentcenter.feignclient.ArgsUserCenterFeignClient;
+import com.itmuch.contentcenter.feignclient.BaiduFeignClient;
 import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
 import com.itmuch.contentcenter.modular.dev.model.HyFans;
 import com.itmuch.contentcenter.modular.dev.model.param.SysUser;
@@ -177,5 +178,12 @@ public class FansController {
 
         hyFans.setNickName(userStr);
         return hyFans;
+    }
+
+    private final BaiduFeignClient baiduFeignClient;
+
+    @GetMapping("/baidu")
+    public String baidu(){
+        return this.baiduFeignClient.index();
     }
 }
