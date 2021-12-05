@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-    // 在spring容器中,创建一个对象,类型RestTemplate;名称/ID
-    // <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+    /** 在spring容器中,创建一个对象,类型RestTemplate;名称/ID */
+    /** <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" /> */
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate(){

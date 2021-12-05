@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.feignclient;
 
+import com.itmuch.contentcenter.config.UserContentFeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Author guanqing
  * @Date 2021/12/1 22:13
  **/
-@FeignClient(name = "user-center")
+@FeignClient(name = "user-center", configuration = UserContentFeignConfiguration.class)
 public interface UserCenterFeignClient {
 
     /**

@@ -21,7 +21,11 @@ server:
 
 #user-center:
 #  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
 ribbon:
   eager-load:
     enabled: true
-#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    clients: user-center
+logging:
+  level:
+    com.itmuch.contentcenter.feignclient.UserCenterFeignClient: debug
