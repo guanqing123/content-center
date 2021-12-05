@@ -1,7 +1,9 @@
 package com.itmuch.contentcenter.modular.dev.controller;
 
+import com.itmuch.contentcenter.feignclient.ArgsUserCenterFeignClient;
 import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
 import com.itmuch.contentcenter.modular.dev.model.HyFans;
+import com.itmuch.contentcenter.modular.dev.model.param.SysUser;
 import com.itmuch.contentcenter.modular.dev.service.HyFansService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -155,6 +157,23 @@ public class FansController {
           替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
           计算出一个实例给我们请求 */
         String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex());
+
+        hyFans.setNickName(userStr);
+        return hyFans;
+    }
+
+    private final ArgsUserCenterFeignClient argsUserCenterFeignClient;
+
+    /**
+     * 使用 feign 多参数
+     * @Author guanqing
+     * @Date 2021/12/5 20:35
+     **/
+    @GetMapping("/getFan6")
+    public HyFans getFan6(SysUser user){
+        HyFans hyFans = hyFansService.getFan();
+
+        String userStr = this.argsUserCenterFeignClient.query(user);
 
         hyFans.setNickName(userStr);
         return hyFans;
