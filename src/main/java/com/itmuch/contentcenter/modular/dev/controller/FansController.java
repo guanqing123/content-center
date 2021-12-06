@@ -1,20 +1,35 @@
 package com.itmuch.contentcenter.modular.dev.controller;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.context.ContextUtil;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.itmuch.contentcenter.feignclient.ArgsUserCenterFeignClient;
 import com.itmuch.contentcenter.feignclient.BaiduFeignClient;
 import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
 import com.itmuch.contentcenter.modular.dev.model.HyFans;
 import com.itmuch.contentcenter.modular.dev.model.param.SysUser;
+import com.itmuch.contentcenter.modular.dev.service.HyCommonService;
 import com.itmuch.contentcenter.modular.dev.service.HyFansService;
+import com.itmuch.contentcenter.sentinel.BlockHandlerClass;
+import com.itmuch.contentcenter.sentinel.FallbackClass;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -185,5 +200,114 @@ public class FansController {
     @GetMapping("/baidu")
     public String baidu(){
         return this.baiduFeignClient.index();
+    }
+
+    private final HyCommonService hyCommonService;
+
+    @GetMapping("test-a")
+    public String testA(){
+        this.hyCommonService.common();
+        return "test-a";
+    }
+
+    @GetMapping("test-b")
+    public String testB(){
+        this.hyCommonService.common();
+        return "test-b";
+    }
+
+    /**
+     * 热点规则测试
+     * @Author guanqing
+     * @Date 2021/12/6 21:02
+     **/
+    @GetMapping("test-hot")
+    @SentinelResource("hot")
+    public String hot(
+        @RequestParam(required = false) String a,
+        @RequestParam(required = false) String b
+    ){
+        return a + " " + b;
+    }
+
+    /**
+     * 代码生成流量控制规则
+     * @Author guanqing
+     * @Date 2021/12/6 21:16
+     **/
+    @GetMapping("test-add-flow-rule")
+    public String codeFlowRule(){
+        this.initFlowQpsRule();
+        return "success";
+    }
+
+    private void initFlowQpsRule() {
+        List<FlowRule> rules = new ArrayList<>();
+        FlowRule rule = new FlowRule("/getFan4");
+        // set limit qps to 20
+        rule.setCount(20);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
+        rules.add(rule);
+        FlowRuleManager.loadRules(rules);
+    }
+
+    /**
+     * Sentinel API
+     * @Author guanqing
+     * @Date 2021/12/6 22:38
+     **/
+    @GetMapping("test-sentinel-api")
+    public String testSentinelAPI(@RequestParam(required = false) String a){
+
+        String resourceName = "test-sentinel-api";
+        ContextUtil.enter(resourceName, "test-wfw");
+
+        Entry entry = null;
+        try {
+            /** 定义一个sentinel保护的资源,资源名称是test-sentinel-api */
+            entry = SphU.entry(resourceName);
+            /** 被保护的业务逻辑 */
+            if (StringUtils.isBlank(a)) {
+                throw new  IllegalArgumentException("a不能为空");
+            }
+            return a;
+        }
+        /** 如果被保护的资源被限流或者降级了,就会抛BlockException */
+        catch (BlockException e) {
+            log.warn("限流,或者降级了", e);
+            return "限流,或者降级了";
+        } catch (IllegalArgumentException e) {
+            /** 统计IllegalArgumentException 【发生的次数、发生占比...】 */
+            Tracer.trace(e);
+            return "参数非法";
+        }
+        finally {
+            if (entry != null) {
+                /** 退出entry */
+                entry.exit();
+            }
+            ContextUtil.exit();
+        }
+    }
+
+    /**
+     * 使用 @SentinelResource（不支持'针对来源'） 重构
+     * @Author guanqing
+     * @Date 2021/12/6 22:38
+     **/
+    @GetMapping("test-sentinel-resource")
+    @SentinelResource(
+        value = "test-sentinel-api",
+        blockHandler = "block",
+        blockHandlerClass = BlockHandlerClass.class,
+        fallback = "fallback",
+        fallbackClass = FallbackClass.class
+    )
+    public String testSentinelResource(@RequestParam(required = false) String a){
+        if (StringUtils.isBlank(a)) {
+            throw new IllegalArgumentException("a不能为空");
+        }
+        return a;
     }
 }
