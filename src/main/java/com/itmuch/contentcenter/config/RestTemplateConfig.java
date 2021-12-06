@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.config;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ public class RestTemplateConfig {
     /** <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" /> */
     @Bean
     @LoadBalanced
+    @SentinelRestTemplate
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }

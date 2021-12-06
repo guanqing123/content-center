@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -309,5 +310,15 @@ public class FansController {
             throw new IllegalArgumentException("a不能为空");
         }
         return a;
+    }
+
+    /**
+     * restTemplate 整合 sentinel
+     * @Author guanqing
+     * @Date 2021/12/6 23:21
+     **/
+    @GetMapping("test-rest-template-sentinel/{id}")
+    public String sentinelRestTemplate(@PathVariable Integer id){
+        return this.restTemplate.getForObject("http://user-center/users/{id}", String.class, id);
     }
 }
