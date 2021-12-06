@@ -54,6 +54,9 @@ feign:
     max-connections-per-route: 50
   okhttp:
     enabled: true
+  # 为feign整合sentinel
+  sentinel:
+    enabled: true
 management:
   endpoints:
     web:
