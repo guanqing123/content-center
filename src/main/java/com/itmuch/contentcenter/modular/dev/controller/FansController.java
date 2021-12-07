@@ -170,9 +170,6 @@ public class FansController {
     public HyFans getFan5(){
         HyFans hyFans = hyFansService.getFan();
 
-        /** 当restTemplate发起请求的时候,ribbon会自动把 user-center
-          替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
-          计算出一个实例给我们请求 */
         String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex());
 
         hyFans.setNickName(userStr);
