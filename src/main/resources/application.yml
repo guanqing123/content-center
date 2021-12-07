@@ -39,6 +39,7 @@ ribbon:
 logging:
   level:
     com.itmuch.contentcenter.feignclient.UserCenterFeignClient: debug
+
 feign:
   client:
     config:
@@ -52,8 +53,8 @@ feign:
     max-connections: 200
     # feign单个路径的最大连接数
     max-connections-per-route: 50
-  okhttp:
-    enabled: true
+  #okhttp:
+    #enabled: true
   # 为feign整合sentinel
   sentinel:
     enabled: true
