@@ -179,6 +179,16 @@ public class FansController {
         return hyFans;
     }
 
+    /**
+     * RESTfulURL 支持
+     * @Author guanqing
+     * @Date 2021/12/7 15:56
+     **/
+    @GetMapping("/getRestFul/{id}")
+    public String getRestFul(@PathVariable String id){
+        return this.userCenterFeignClient.findUserById(id);
+    }
+
     private final ArgsUserCenterFeignClient argsUserCenterFeignClient;
 
     /**
