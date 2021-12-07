@@ -21,13 +21,13 @@
         </jdbcConnection>
 
         <!--实体-->
-        <javaModelGenerator targetPackage="com.itmuch.conentcenter.modular.${moduleName}.model"
+        <javaModelGenerator targetPackage="com.itmuch.contentcenter.modular.${moduleName}.model"
                             targetProject="src/main/java"/>
         <!--mapper.xml-->
-        <sqlMapGenerator targetPackage="com.itmuch.conentcenter.modular.${moduleName}.mapper.mapping"
+        <sqlMapGenerator targetPackage="com.itmuch.contentcenter.modular.${moduleName}.mapper.mapping"
                          targetProject="src/main/resources"/>
         <!--mapper接口-->
-        <javaClientGenerator targetPackage="com.itmuch.conentcenter.modular.${moduleName}.mapper"
+        <javaClientGenerator targetPackage="com.itmuch.contentcenter.modular.${moduleName}.mapper"
                              targetProject="src/main/java"
                              type="XMLMAPPER"/>
 

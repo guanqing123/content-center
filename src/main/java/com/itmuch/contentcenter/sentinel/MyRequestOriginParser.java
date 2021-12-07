@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 /** 为了避免对后面测试有影响,先注释掉 */
 // @Component
 public class MyRequestOriginParser implements RequestOriginParser {
+
     @Override
     public String parseOrigin(HttpServletRequest request) {
         /** 从请求参数中获取名为 origin 的参数并返回
