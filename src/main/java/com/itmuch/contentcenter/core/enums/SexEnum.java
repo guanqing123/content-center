@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SexEnum {
     /** 男 */
-    MAN,
+    M,
     /** 女 */
-    WOMAN
+    F
 }

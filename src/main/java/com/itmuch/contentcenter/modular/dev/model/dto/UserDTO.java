@@ -1,4 +1,4 @@
-package com.itmuch.contentcenter.modular.dev.model.param;
+package com.itmuch.contentcenter.modular.dev.model.dto;
 
 import com.itmuch.contentcenter.core.enums.SexEnum;
 import lombok.Data;

@@ -68,3 +68,9 @@ resttemplate:
   sentinel:
     # 关闭@SentinelRestTemplate注解
     enabled: false
+
+rocketmq:
+  name-server: 172.30.8.74:9876
+  producer:
+    # 小坑：必须指定group
+    group: test-group
