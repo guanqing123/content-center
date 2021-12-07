@@ -26,4 +26,10 @@ public class UserController {
         // TODO: 认证、授权
         return this.hyUserService.modifyUser(id, userDTO);
     }
+
+    @PutMapping("/tran/{id}")
+    public HyUser modifyTran(@PathVariable Integer id,@RequestBody UserDTO userDTO){
+        // TODO: 认证、授权
+        return this.hyUserService.modifyTran(id, userDTO);
+    }
 }
