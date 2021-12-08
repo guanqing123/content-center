@@ -5,10 +5,9 @@ import com.itmuch.contentcenter.modular.dev.model.dto.UserDTO;
 import com.itmuch.contentcenter.modular.dev.service.HyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @description: TODO 类描述
@@ -31,5 +30,19 @@ public class UserController {
     public HyUser modifyTran(@PathVariable Integer id,@RequestBody UserDTO userDTO){
         // TODO: 认证、授权
         return this.hyUserService.modifyTran(id, userDTO);
+    }
+
+    @Autowired
+    private Source source;
+
+    @GetMapping("/test-stream")
+    public String testStream(){
+        this.source.output()
+                .send(
+                    MessageBuilder.withPayload(
+                      "消息体"
+                    ).build()
+                );
+        return "success";
     }
 }

@@ -20,6 +20,14 @@ spring:
       #打开/关闭掉对Spring MVC端点的保护
       filter:
         enabled: true
+    stream:
+      rocketmq:
+        binder:
+          name-server: 172.30.8.74:9876
+      bindings:
+        output:
+          # 用来指定topic
+          destination: stream-test-topic
   application:
     # 服务名称尽量用-,不要用_,不要用特殊字符
     name: content-center
@@ -74,3 +82,4 @@ rocketmq:
   producer:
     # 小坑：必须指定group
     group: test-group
+
