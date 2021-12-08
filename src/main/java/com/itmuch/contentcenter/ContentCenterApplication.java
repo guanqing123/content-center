@@ -1,6 +1,7 @@
 package com.itmuch.contentcenter;
 
 import com.itmuch.contentcenter.config.GlobalFeignConfiguration;
+import com.itmuch.contentcenter.rocketmq.MySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -17,7 +18,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 // @EnableFeignClients(defaultConfiguration = GlobalFeignConfiguration.class)
 @EnableFeignClients
-@EnableBinding(Source.class)
+@EnableBinding({Source.class, MySource.class})
 public class ContentCenterApplication {
     public static void main(String[] args) {
         SpringApplication.run(ContentCenterApplication.class, args);

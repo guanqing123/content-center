@@ -3,6 +3,7 @@ package com.itmuch.contentcenter.modular.dev.controller;
 import com.itmuch.contentcenter.modular.dev.model.HyUser;
 import com.itmuch.contentcenter.modular.dev.model.dto.UserDTO;
 import com.itmuch.contentcenter.modular.dev.service.HyUserService;
+import com.itmuch.contentcenter.rocketmq.MySource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.messaging.Source;
@@ -39,9 +40,23 @@ public class UserController {
     public String testStream(){
         this.source.output()
                 .send(
-                    MessageBuilder.withPayload(
-                      "消息体"
-                    ).build()
+                    MessageBuilder
+                        .withPayload("消息体")
+                        .build()
+                );
+        return "success";
+    }
+
+    @Autowired
+    private MySource mySource;
+
+    @GetMapping("/test-my-stream")
+    public String testMyStream(){
+        this.mySource.output()
+                .send(
+                    MessageBuilder
+                        .withPayload("消息体")
+                        .build()
                 );
         return "success";
     }
