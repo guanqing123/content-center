@@ -24,6 +24,12 @@ spring:
       rocketmq:
         binder:
           name-server: 172.30.8.74:9876
+        bindings:
+          output:
+            producer:
+              # 实现事务
+              transactional: true
+              group: tx-sync-user-group
       bindings:
         output:
           # 用来指定topic
@@ -73,6 +79,9 @@ management:
     web:
       exposure:
         include: '*'
+  endpoint:
+    health:
+      show-details: always
 
 resttemplate:
   sentinel:
@@ -84,4 +93,3 @@ rocketmq:
   producer:
     # 小坑：必须指定group
     group: test-group
-

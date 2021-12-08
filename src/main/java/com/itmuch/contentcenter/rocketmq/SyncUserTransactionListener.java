@@ -1,10 +1,12 @@
 package com.itmuch.contentcenter.rocketmq;
 
+import com.alibaba.fastjson.JSON;
 import com.itmuch.contentcenter.modular.dev.mapper.RocketTransactionLogMapper;
 import com.itmuch.contentcenter.modular.dev.model.RocketTransactionLog;
 import com.itmuch.contentcenter.modular.dev.model.dto.UserDTO;
 import com.itmuch.contentcenter.modular.dev.service.HyUserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
@@ -31,6 +33,12 @@ public class SyncUserTransactionListener implements RocketMQLocalTransactionList
         MessageHeaders headers = message.getHeaders();
         String transactionId = (String) headers.get(RocketMQHeaders.TRANSACTION_ID);
         Integer userId = Integer.valueOf((String) headers.get("user_id"));
+
+        /** stream 方式 o 应该为空, dto对象通过 header 传递 */
+        String dtoStr = (String) headers.get("dto");
+        if (StringUtils.isNotBlank(dtoStr)) {
+            o = JSON.parseObject(dtoStr, UserDTO.class);
+        }
 
         try {
             this.hyUserService.userByIdWithRocketMqLog(userId, (UserDTO) o, transactionId);

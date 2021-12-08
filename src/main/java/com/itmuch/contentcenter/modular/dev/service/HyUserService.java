@@ -10,4 +10,6 @@ public interface HyUserService {
     HyUser modifyTran(Integer id, UserDTO userDTO);
 
     void userByIdWithRocketMqLog(Integer id, UserDTO userDTO, String transactionId);
+
+    HyUser modifyTranByStream(Integer id, UserDTO userDTO);
 }

@@ -32,4 +32,10 @@ public class UserController {
         // TODO: 认证、授权
         return this.hyUserService.modifyTran(id, userDTO);
     }
+
+    @PutMapping("/stream/{id}")
+    public HyUser modifyTranByStream(@PathVariable Integer id,@RequestBody UserDTO userDTO){
+        // TODO: 认证、授权
+        return this.hyUserService.modifyTranByStream(id, userDTO);
+    }
 }

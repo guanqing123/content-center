@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.modular.dev.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.itmuch.contentcenter.modular.dev.mapper.HyUserMapper;
 import com.itmuch.contentcenter.modular.dev.mapper.RocketTransactionLogMapper;
 import com.itmuch.contentcenter.modular.dev.model.HyUser;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +86,36 @@ public class HyUserServiceImpl implements HyUserService {
              /** arg有大用处 */
              userDTO
         );
+
+        return hyUser;
+    }
+
+    private final Source source;
+
+    @Override
+    public HyUser modifyTranByStream(Integer id, UserDTO userDTO) {
+        /** 1.查找hy_user */
+        HyUser hyUser = hyUserMapper.selectByPrimaryKey(id);
+        if (hyUser == null) {
+            throw new IllegalArgumentException("参数非法,用户不存在");
+        }
+
+        /** 发送半消息 */
+        String transactionId = UUID.randomUUID().toString();
+        this.source.output()
+            .send(MessageBuilder
+                    .withPayload(
+                        SysUserDTO.builder()
+                            .userId(id)
+                            .sex(userDTO.getSex().toString())
+                            .build()
+                    )
+                    /** header也有妙用 */
+                    .setHeader(RocketMQHeaders.TRANSACTION_ID, transactionId)
+                    .setHeader("user_id", id)
+                    .setHeader("dto", JSON.toJSONString(userDTO))
+                    .build()
+            );
 
         return hyUser;
     }
