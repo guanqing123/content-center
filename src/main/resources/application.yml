@@ -93,3 +93,8 @@ rocketmq:
   producer:
     # 小坑：必须指定group
     group: test-group
+
+jwt:
+  secret: 374052753
+  # 有效期，单位秒，默认2周
+  expire-time-in-second: 1209600
