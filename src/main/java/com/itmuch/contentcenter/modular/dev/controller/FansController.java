@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequestMapping("/content")
 public class FansController {
 
     @Autowired
