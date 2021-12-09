@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.modular.dev.controller;
 
+import com.itmuch.contentcenter.auth.CheckAuthorization;
 import com.itmuch.contentcenter.modular.dev.model.HyUser;
 import com.itmuch.contentcenter.modular.dev.model.dto.UserDTO;
 import com.itmuch.contentcenter.modular.dev.service.HyUserService;
@@ -22,6 +23,7 @@ public class UserController {
     private final HyUserService hyUserService;
 
     @PutMapping("/user/{id}")
+    @CheckAuthorization("stylefeng")
     public HyUser modifyUser(@PathVariable Integer id,@RequestBody UserDTO userDTO){
         // TODO: 认证、授权
         return this.hyUserService.modifyUser(id, userDTO);

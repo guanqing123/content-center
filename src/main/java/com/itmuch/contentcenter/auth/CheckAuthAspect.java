@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -14,6 +15,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @description: TODO 类描述
@@ -23,17 +26,20 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class CheckLogAspect {
+public class CheckAuthAspect {
 
     private final JwtOperator jwtOperator;
 
     @Around("@annotation(com.itmuch.contentcenter.auth.CheckLogin)")
-    public Object checkLogin(ProceedingJoinPoint point) {
+    public Object checkLogin(ProceedingJoinPoint point) throws Throwable {
+        checkToken();
+        return point.proceed();
+    }
+
+    private void checkToken() {
         try {
             /** 1. 从header里面获取token */
-            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-            ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
-            HttpServletRequest request = attributes.getRequest();
+            HttpServletRequest request = getHttpServletRequest();
 
             String token = request.getHeader("Authorization");
 
@@ -48,10 +54,40 @@ public class CheckLogAspect {
 
             request.setAttribute("id", claims.get("userId"));
             request.setAttribute("name", claims.get("name"));
-
-            return point.proceed();
         } catch (Throwable throwable) {
             throw new SecurityException("Token不合法!");
         }
+    }
+
+    private HttpServletRequest getHttpServletRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
+        return attributes.getRequest();
+    }
+
+    @Around("@annotation(com.itmuch.contentcenter.auth.CheckAuthorization)")
+    public Object checkAuthorization(ProceedingJoinPoint point) throws Throwable {
+        try {
+            /** 1. 验证token是否合法 */
+            this.checkToken();
+
+            /** 2. 验证用户角色是否匹配 */
+            HttpServletRequest request = getHttpServletRequest();
+            String  name = (String) request.getAttribute("name");
+
+            MethodSignature signature = (MethodSignature) point.getSignature();
+            Method method = signature.getMethod();
+            CheckAuthorization annotation = method.getAnnotation(CheckAuthorization.class);
+
+            String value = annotation.value();
+
+            if (!Objects.equals(name, value)) {
+                throw new SecurityException("用户无权访问！");
+            }
+
+        } catch (Throwable throwable) {
+            throw new SecurityException("用户无权访问！");
+        }
+        return point.proceed();
     }
 }
