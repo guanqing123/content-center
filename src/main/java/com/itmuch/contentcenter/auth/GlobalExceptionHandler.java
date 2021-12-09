@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
              HttpStatus.UNAUTHORIZED
         );
     }
+
+    @ExceptionHandler(Exception.class)
+    public String error(Exception e){
+        return e.getMessage();
+    }
 }
 
 @Data
