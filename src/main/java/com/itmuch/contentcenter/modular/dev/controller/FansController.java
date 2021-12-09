@@ -25,10 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -169,13 +166,13 @@ public class FansController {
      **/
     @GetMapping("/getFan5")
     @CheckLogin
-    public HyFans getFan5(){
+    public HyFans getFan5(@RequestHeader("Authorization") String token){
         HyFans hyFans = hyFansService.getFan();
 
         /** 当restTemplate发起请求的时候,ribbon会自动把 user-center
           替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
           计算出一个实例给我们请求 */
-        String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex());
+        String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex(), token);
 
         hyFans.setNickName(userStr);
         return hyFans;
@@ -187,8 +184,9 @@ public class FansController {
      * @Date 2021/12/7 15:56
      **/
     @GetMapping("/getRestFul/{id}")
-    public String getRestFul(@PathVariable String id){
-        return this.userCenterFeignClient.findUserById(id);
+    public String getRestFul(@PathVariable String id,
+            @RequestHeader("Authorization") String token){
+        return this.userCenterFeignClient.findUserById(id, token);
     }
 
     private final ArgsUserCenterFeignClient argsUserCenterFeignClient;
