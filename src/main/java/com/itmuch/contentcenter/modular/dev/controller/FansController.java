@@ -166,13 +166,13 @@ public class FansController {
      **/
     @GetMapping("/getFan5")
     @CheckLogin
-    public HyFans getFan5(@RequestHeader("Authorization") String token){
+    public HyFans getFan5(){
         HyFans hyFans = hyFansService.getFan();
 
         /** 当restTemplate发起请求的时候,ribbon会自动把 user-center
           替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
           计算出一个实例给我们请求 */
-        String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex(), token);
+        String userStr = this.userCenterFeignClient.findUserById(hyFans.getSex());
 
         hyFans.setNickName(userStr);
         return hyFans;
@@ -184,9 +184,8 @@ public class FansController {
      * @Date 2021/12/7 15:56
      **/
     @GetMapping("/getRestFul/{id}")
-    public String getRestFul(@PathVariable String id,
-            @RequestHeader("Authorization") String token){
-        return this.userCenterFeignClient.findUserById(id, token);
+    public String getRestFul(@PathVariable String id){
+        return this.userCenterFeignClient.findUserById(id);
     }
 
     private final ArgsUserCenterFeignClient argsUserCenterFeignClient;

@@ -17,7 +17,7 @@ public class UserCenterFeignClientFallbackFactory implements FallbackFactory<Use
     public UserCenterFeignClient create(Throwable throwable) {
         return new UserCenterFeignClient() {
             @Override
-            public String findUserById(String id, String token) {
+            public String findUserById(String id) {
                 log.warn("远程调用被限流/降级了", throwable);
                 return "一个默认的用户-fallbackfactory";
             }

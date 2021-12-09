@@ -26,6 +26,5 @@ public interface UserCenterFeignClient {
      * @Date 2021/12/1 22:15
      **/
     @GetMapping("/users/{id}")
-    String findUserById(@PathVariable String id,
-                        @RequestHeader("Authorization") String token);
+    String findUserById(@PathVariable String id);
 }
