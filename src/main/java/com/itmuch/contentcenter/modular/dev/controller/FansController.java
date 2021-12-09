@@ -22,9 +22,14 @@ import com.itmuch.contentcenter.sentinel.FallbackClass;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.methods.HttpHead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -156,6 +161,28 @@ public class FansController {
                 String.class,
                 hyFans.getSex());
         hyFans.setNickName(userStr);
+        return hyFans;
+    }
+
+    @GetMapping("/tokenRelay")
+    public HyFans tokenRelay(@RequestHeader("Authorization") String token){
+        HyFans hyFans = hyFansService.getFan();
+
+        /** 当restTemplate发起请求的时候,ribbon会自动把 user-center
+         替换成用户中心在 nacos 上的地址,并且进行负载均衡算法,
+         计算出一个实例给我们请求 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", token);
+        ResponseEntity<String> entity =  this.restTemplate
+            .exchange(
+            "http://user-center/users/{id}",
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                String.class,
+                hyFans.getSex()
+            );
+
+        hyFans.setNickName(entity.getBody());
         return hyFans;
     }
 
