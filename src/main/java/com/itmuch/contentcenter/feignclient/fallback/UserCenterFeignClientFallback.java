@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserCenterFeignClientFallback implements UserCenterFeignClient {
     @Override
-    public String findUserById(String id) {
+    public String findUserById(String id, String token) {
         return "一个默认用户";
     }
 }
