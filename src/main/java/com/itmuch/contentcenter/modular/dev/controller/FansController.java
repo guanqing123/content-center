@@ -9,6 +9,7 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.itmuch.contentcenter.auth.CheckLogin;
 import com.itmuch.contentcenter.feignclient.ArgsUserCenterFeignClient;
 import com.itmuch.contentcenter.feignclient.BaiduFeignClient;
 import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
@@ -167,6 +168,7 @@ public class FansController {
      * @Date 2021/11/29 22:30
      **/
     @GetMapping("/getFan5")
+    @CheckLogin
     public HyFans getFan5(){
         HyFans hyFans = hyFansService.getFan();
 

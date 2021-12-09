@@ -112,6 +112,11 @@
             <version>0.10.7</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- 登录验证,aop -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
