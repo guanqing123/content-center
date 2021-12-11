@@ -2,14 +2,19 @@ spring:
   cloud:
     nacos:
       config:
-        # 共享配置的DataId,多个使用,分隔
-        # 越靠后,优先级越高; common2.yml > common1.yaml
-        # .yaml后缀不能少,只支持yaml/properties
-        shared-dataids: common1.yaml,common2.yaml
-        # 哪些共享配置支持动态刷新,多个使用,分隔
-        refreshable-dataids: common1.yaml
         server-addr: 172.30.8.74:8848
         file-extension: yaml
+        ext-config:
+          # 需配置的DataId, yaml后缀不能少,只支持yaml/properties
+          # 越靠后,优先级越高; common2.yml > common1.yaml
+          - data-id: common1.yaml
+            # common1.yaml所在的group
+            group: DEFAULT_GROUP
+            # 是否允许刷新,默认false
+            refresh: true
+          - data-id: common2.yaml
+            group: DEFAULT_GROUP
+            refresh: true
   application:
     name: content-center
   profiles:
